@@ -46,7 +46,7 @@ const fadeEls = document.querySelectorAll('.fade-in');
 const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
         if (entry.isIntersecting) {
-            const delay = entry.target.closest('.food-gallery, .concept-grid, .seat-content, .info-grid')
+            const delay = entry.target.closest('.course-list, .concept-grid, .seat-content, .info-grid')
                 ? Array.from(entry.target.parentElement.children).indexOf(entry.target) * 80
                 : 0;
             setTimeout(() => {
@@ -61,6 +61,42 @@ const observer = new IntersectionObserver((entries) => {
 });
 
 fadeEls.forEach(el => observer.observe(el));
+
+// ===== FOOD SLIDESHOW =====
+const foodSlides = document.querySelectorAll('.food-slide');
+const foodDots = document.querySelectorAll('.food-slideshow-dot');
+let foodSlideIndex = 0;
+let foodSlideTimer;
+
+const showFoodSlide = (index) => {
+    if (!foodSlides.length) return;
+    foodSlideIndex = (index + foodSlides.length) % foodSlides.length;
+
+    foodSlides.forEach((slide, i) => {
+        slide.classList.toggle('is-active', i === foodSlideIndex);
+    });
+
+    foodDots.forEach((dot, i) => {
+        dot.classList.toggle('is-active', i === foodSlideIndex);
+    });
+};
+
+const startFoodSlideshow = () => {
+    if (foodSlides.length <= 1) return;
+    window.clearInterval(foodSlideTimer);
+    foodSlideTimer = window.setInterval(() => {
+        showFoodSlide(foodSlideIndex + 1);
+    }, 4000);
+};
+
+foodDots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+        showFoodSlide(i);
+        startFoodSlideshow();
+    });
+});
+
+startFoodSlideshow();
 
 // ===== SMOOTH SCROLL OFFSET =====
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
